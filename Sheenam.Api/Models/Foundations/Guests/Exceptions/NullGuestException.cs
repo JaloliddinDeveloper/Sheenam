@@ -2,12 +2,14 @@
 //Copyright (c) Coalition of Good-Hearted Engineers 
 //Free To Use To Find Comfort and Pease
 //=================================================
-namespace Sheenam.Api.Models.Foundations.Guests
+
+using Xeptions;
+
+namespace Sheenam.Api.Models.Foundations.Guests.Exceptions
 {
-    public enum GenderType
+    public class NullGuestException:Xeption
     {
-        Male,
-        Female,
-        Other
+        public NullGuestException() : base(message:"Guest is null") { }
+       
     }
 }
