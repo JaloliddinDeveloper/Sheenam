@@ -1,4 +1,9 @@
-﻿using Microsoft.OpenApi.Models;
+﻿//==================================================
+// Copyright (c) Coalition Of Good-Hearted Engineers
+// Free To Use To Find Comfort And Peace
+//==================================================
+
+using Microsoft.OpenApi.Models;
 
 namespace Sheenam.Api
 {
