@@ -4,6 +4,7 @@
 //==================================================
 
 using Microsoft.OpenApi.Models;
+using Sheenam.Api.Brokers.Storages;
 
 namespace Sheenam.Api
 {
@@ -23,7 +24,7 @@ namespace Sheenam.Api
                 Version = "v1"
             };
 
-           // services.AddDbContext<StorageBroker>();
+           services.AddDbContext<StorageBroker>();
             services.AddControllers();
             AddBrokers(services);
 
@@ -61,7 +62,7 @@ namespace Sheenam.Api
         }
         private static void AddBrokers(IServiceCollection services)
         {
-           // services.AddTransient<IStorageBroker, StorageBroker>();
+            services.AddTransient<IStorageBroker, StorageBroker>();
            // services.AddTransient<ILoggingBroker, LoggingBroker>();
         }
     }
