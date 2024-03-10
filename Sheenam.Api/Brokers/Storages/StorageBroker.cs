@@ -1,9 +1,14 @@
-﻿using EFxceptions;
+﻿//==================================================
+// Copyright (c) Coalition Of Good-Hearted Engineers
+// Free To Use To Find Comfort And Peace
+//==================================================
+
+using EFxceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Sheenam.Api.Brokers.Storages
 {
-    public partial class StorageBroker:EFxceptionsContext
+    public partial class StorageBroker:EFxceptionsContext,IStorageBroker
     {
         private readonly IConfiguration configuration;
 
