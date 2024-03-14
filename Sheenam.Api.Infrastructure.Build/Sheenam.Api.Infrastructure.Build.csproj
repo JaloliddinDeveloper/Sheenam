@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="ADotNet" Version="3.0.2" />
+    <PackageReference Include="Xeption" Version="2.6.0" />
   </ItemGroup>
 
 </Project>
