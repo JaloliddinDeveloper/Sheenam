@@ -3,6 +3,7 @@
 //Free To Use To Find Comfort and Pease
 //=================================================
 
+using ADotNet.Models.Pipelines.GithubPipelines.DotNets;
 using Microsoft.Data.SqlClient;
 using Moq;
 using Sheenam.Api.Brokers.Loggings;
@@ -35,8 +36,16 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
         }
 
         private static Guest CreateRandomGuest() =>
-            CreateGuestFiller(data: GetRandomDateTimeOffset()).Create();
+            CreateGuestFiller(date: GetRandomDateTimeOffset()).Create();
 
+        private IQueryable<Guest> CreateRandomGuests()
+        {
+            return CreateGuestFiller(date: GetRandomDatetimeOffset())
+                .Create(count: GetRandomNumber()).AsQueryable();
+        }
+
+        private DateTimeOffset GetRandomDatetimeOffset() =>
+            new DateTimeRange(earliestDate: DateTime.UnixEpoch).GetValue();
         public static DateTimeOffset GetRandomDateTimeOffset() =>
             new DateTimeRange(earliestDate: new DateTime()).GetValue();
 
@@ -66,12 +75,12 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
         private Expression<Func<Xeption,bool>> SameExceptionAs(Xeption expectedException)=>
             actualException =>actualException.SameExceptionAs(expectedException);
            
-        private static Filler<Guest> CreateGuestFiller(DateTimeOffset data)
+        private static Filler<Guest> CreateGuestFiller(DateTimeOffset date)
         {
             var filler=new Filler<Guest>();
 
             filler.Setup()
-               .OnType<DateTimeOffset>().Use(data);
+               .OnType<DateTimeOffset>().Use(date);
             return filler;
         }
     }

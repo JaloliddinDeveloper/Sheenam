@@ -7,7 +7,6 @@ using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
 using Sheenam.Api.Models.Foundations.Guests;
 using Sheenam.Api.Models.Foundations.Guests.Exceptions;
-using System;
 using Xeptions;
 
 namespace Sheenam.Api.Services.Foundations.Guests
@@ -15,6 +14,7 @@ namespace Sheenam.Api.Services.Foundations.Guests
     public partial class GuestService
     {
         private delegate ValueTask<Guest> ReturningGuestFunction();
+        private delegate IQueryable<Guest> ReturningGuestsFunction();
 
         private async ValueTask<Guest> TryCatch(ReturningGuestFunction returningGuestFunction)
         {
@@ -30,24 +30,23 @@ namespace Sheenam.Api.Services.Foundations.Guests
             {
                 throw CreateAndLogValidationException(invalidGuestException);
             }
-            catch(SqlException  sqlException)
+            catch (SqlException sqlException)
             {
-                var failedGuestStorageException=new FailedGuestStorageException(sqlException);
+                var failedGuestStorageException = new FailedGuestStorageException(sqlException);
                 throw CreateAndLogCriticalDependencyException(failedGuestStorageException);
             }
-            catch(DuplicateKeyException duplicateKeyException)
+            catch (DuplicateKeyException duplicateKeyException)
             {
-                var alreadyExistGuestException=new AlreadyExistGuestException(duplicateKeyException);
+                var alreadyExistGuestException = new AlreadyExistGuestException(duplicateKeyException);
                 throw CreateAndDependencyValidationException(alreadyExistGuestException);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
-                var failedGuestServiceException=
+                var failedGuestServiceException =
                     new FailedGuestServiceException(exception);
 
                 throw CreateAndLogServiseException(failedGuestServiceException);
             }
-            
         }
         private GuestValidationException CreateAndLogValidationException(Xeption exception)
         {
@@ -77,6 +76,20 @@ namespace Sheenam.Api.Services.Foundations.Guests
             var guestServiceException=new GuestServiceException(xeption);
             this.loggingBroker.LogError(guestServiceException);
             return guestServiceException;
+        }
+
+        private IQueryable<Guest> TryCatch(ReturningGuestsFunction returningGuestsFunction)
+        {
+            try
+            {
+                return returningGuestsFunction();
+            }
+            catch (SqlException sqlException)
+            {
+                var failedGuestStorageException = new FailedGuestStorageException(sqlException);
+
+                throw CreateAndLogCriticalDependencyException(failedGuestStorageException);
+            }
         }
     }
 }
