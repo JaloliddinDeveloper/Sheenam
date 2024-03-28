@@ -7,6 +7,7 @@ using FluentAssertions;
 using Force.DeepCloner;
 using Moq;
 using Sheenam.Api.Models.Foundations.Guests;
+using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 
 namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
 {
@@ -61,5 +62,31 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
+        [Fact]
+        public async Task ShouldRetrieveGuestByIdAsync()
+        {
+            //given
+            Guid randomGuestId = Guid.NewGuid();
+            Guid inputGuestId = randomGuestId;
+            Guest randomGuest = CreateRandomGuest();
+            Guest storageGuest = randomGuest;
+            Guest excpectedGuest = randomGuest.DeepClone();
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectGuestByIdAsync(inputGuestId)).ReturnsAsync(storageGuest);
+
+            //when
+            Guest actuallGuest = await this.guestService.RetrieveGuestByIdAsync(inputGuestId);
+
+            //then
+            actuallGuest.Should().BeEquivalentTo(excpectedGuest);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectGuestByIdAsync(inputGuestId), Times.Once());
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
+

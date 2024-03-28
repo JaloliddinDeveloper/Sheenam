@@ -15,6 +15,7 @@ namespace Sheenam.Api.Services.Foundations.Guests
     {
         private delegate ValueTask<Guest> ReturningGuestFunction();
         private delegate IQueryable<Guest> ReturningGuestsFunction();
+     
 
         private async ValueTask<Guest> TryCatch(ReturningGuestFunction returningGuestFunction)
         {
@@ -39,6 +40,10 @@ namespace Sheenam.Api.Services.Foundations.Guests
             {
                 var alreadyExistGuestException = new AlreadyExistGuestException(duplicateKeyException);
                 throw CreateAndDependencyValidationException(alreadyExistGuestException);
+            }
+            catch (NotFoundGuestException notFoundGuestException)
+            {
+                throw CreateAndLogValidationException(notFoundGuestException);
             }
             catch (Exception exception)
             {
