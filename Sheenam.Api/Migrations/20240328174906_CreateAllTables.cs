@@ -1,14 +1,14 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿// ---------------------------------------------------
+// Copyright (c) Coalition of Good-hearted Engineers
+// Free to use to find comfort and pease
+// ---------------------------------------------------
 
-#nullable disable
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Sheenam.Api.Migrations
 {
-    /// <inheritdoc />
-    public partial class InitialCreateAllTables : Migration
+    public partial class CreateAllTables : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -29,8 +29,6 @@ namespace Sheenam.Api.Migrations
                     table.PrimaryKey("PK_Guests", x => x.Id);
                 });
         }
-
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

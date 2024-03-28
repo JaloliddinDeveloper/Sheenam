@@ -25,18 +25,41 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
             broker.InsertGuestAsync(inputGuest))
                 .ReturnsAsync(returningGuest);
             //when
-            Guest actualGuest=
+            Guest actualGuest =
                 await this.guestService.AddGuestAsync(inputGuest);
 
             //then
             actualGuest.Should().BeEquivalentTo(expectedGuest);
 
-            this.storageBrokerMock.Verify(broker=>
+            this.storageBrokerMock.Verify(broker =>
             broker.InsertGuestAsync(inputGuest), Times.Once());
 
             this.storageBrokerMock.VerifyNoOtherCalls();
 
         }
+        [Fact]
+        public void ShouldRetrieveAllGuests()
+        {
+            //given
+            IQueryable<Guest> randomGuests = CreateRandomGuests();
+            IQueryable<Guest> storageGuests = randomGuests;
+            IQueryable<Guest> expectedGuests = storageGuests.DeepClone();
 
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectAllGuests()).Returns(storageGuests);
+
+            //when
+            IQueryable<Guest> actualGuests =
+                this.guestService.RetrieveAllGuests();
+
+            //then
+            actualGuests.Should().BeEquivalentTo(expectedGuests);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectAllGuests(), Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }

@@ -1,7 +1,7 @@
-﻿// ---------------------------------------------------
-// Copyright (c) Coalition of Good-hearted Engineers
-// Free to use to find comfort and pease
-// ---------------------------------------------------
+﻿//=================================================
+//Copyright (c) Coalition of Good-Hearted Engineers 
+//Free To Use To Find Comfort and Pease
+//=================================================
 
 using Xeptions;
 

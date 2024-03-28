@@ -19,15 +19,16 @@ namespace Sheenam.Api.Services.Foundations.Guests
             this.storageBroker = storageBroker;
             this.loggingBroker = loggingBroker;
         }
-
-
         public ValueTask<Guest> AddGuestAsync(Guest guest) =>
             TryCatch(async () =>
             {
-                ValidateGuestOnModify(guest);
+                ValidateGuestOnAdd(guest);
 
                 return await this.storageBroker.InsertGuestAsync(guest);
             });
+
+        public IQueryable<Guest> RetrieveAllGuests() =>
+     TryCatch(() => this.storageBroker.SelectAllGuests());
     }
 }
         

@@ -5,10 +5,9 @@
 
 using EFxceptions;
 using Microsoft.EntityFrameworkCore;
-
 namespace Sheenam.Api.Brokers.Storages
 {
-    public partial class StorageBroker:EFxceptionsContext,IStorageBroker
+    public partial class StorageBroker : EFxceptionsContext, IStorageBroker
     {
         private readonly IConfiguration configuration;
 
@@ -17,9 +16,23 @@ namespace Sheenam.Api.Brokers.Storages
             this.configuration = configuration;
             this.Database.Migrate();
         }
+        private async ValueTask<T> InsertAsync<T>(T @object) where T : class
+        {
+            var broker = new StorageBroker(this.configuration);
+                broker.Entry<T>(@object).State=EntityState.Added;
+            await broker.SaveChangesAsync();
+            return @object;
+        }
+        private IQueryable<T> SelectAll<T>() where T : class
+        { 
+            var broker = new StorageBroker(this.configuration);
+           
+            return broker.Set<T>();
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-D1BB1FN;Initial Catalog=SheenamCoreDB;Integrated Security=True;TrustServerCertificate=True");
+            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-CNTLCPV;Initial Catalog=TestDB;Integrated Security=True;TrustServerCertificate=True");
         }
         public override void Dispose() { }
     }
