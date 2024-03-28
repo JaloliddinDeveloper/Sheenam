@@ -3,6 +3,7 @@
 // Free to use to find comfort and pease
 // ---------------------------------------------------
 
+using ADotNet.Models.Pipelines.GithubPipelines.DotNets;
 using Microsoft.AspNetCore.Mvc;
 using RESTFulSense.Controllers;
 using Sheenam.Api.Models.Foundations.Guests;
@@ -63,6 +64,33 @@ namespace Sheenam.Api.Controllers
             catch (GuestDependencyException locationDependencyException)
             {
                 return InternalServerError(locationDependencyException.InnerException);
+            }
+            catch (GuestServiceException GuestServiceException)
+            {
+                return InternalServerError(GuestServiceException.InnerException);
+            }
+        }
+
+        [HttpGet("{guestId}")]
+        public async ValueTask<ActionResult<Guest>> GetGuestByIdAsync(Guid guestId)
+        {
+            try
+            {
+                return await this.guestService.RetrieveGuestByIdAsync(guestId);
+            }
+            catch (GuestDependencyException GuestDependencyException)
+            {
+                return InternalServerError(GuestDependencyException.InnerException);
+            }
+            catch (GuestValidationException GuestValidationException)
+                when (GuestValidationException.InnerException is InvalidGuestException)
+            {
+                return BadRequest(GuestValidationException.InnerException);
+            }
+            catch (GuestValidationException GuestValidationException)
+                when (GuestValidationException.InnerException is NotFoundGuestException)
+            {
+                return NotFound(GuestValidationException.InnerException);
             }
             catch (GuestServiceException GuestServiceException)
             {
