@@ -7,8 +7,6 @@ using FluentAssertions;
 using Force.DeepCloner;
 using Moq;
 using Sheenam.Api.Models.Foundations.Guests;
-using Sheenam.Api.Models.Foundations.Guests.Exceptions;
-
 namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
 {
     public partial class GuestServiceTests
@@ -83,6 +81,47 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectGuestByIdAsync(inputGuestId), Times.Once());
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+        //Modify
+
+        [Fact]
+        public async Task ShouldModifyGuestAsync()
+        {
+            //given
+            DateTimeOffset randomDate = GetRandomDatetimeOffset();
+            Guest randomGuest = CreateRandomModifyGuest(randomDate);
+            Guest inputGuest = randomGuest;
+            Guest storageLangauge = inputGuest.DeepClone();
+            Guest updatedGuest = inputGuest;
+            Guest expectedGuest = updatedGuest.DeepClone();
+            Guid GuestId = inputGuest.Id;
+
+          
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectGuestByIdAsync(GuestId))
+                    .ReturnsAsync(storageLangauge);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.UpdateGuestAsync(inputGuest))
+                    .ReturnsAsync(updatedGuest);
+
+            //when
+            Guest actualGuest =
+                await this.guestService.ModifyGuestAsync(inputGuest);
+
+            //then
+            actualGuest.Should().BeEquivalentTo(expectedGuest);
+
+         
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectGuestByIdAsync(GuestId), Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.UpdateGuestAsync(inputGuest), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();

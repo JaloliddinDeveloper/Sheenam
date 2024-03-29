@@ -61,9 +61,9 @@ namespace Sheenam.Api.Controllers
 
                 return Ok(allGuests);
             }
-            catch (GuestDependencyException locationDependencyException)
+            catch (GuestDependencyException GuestDependencyException)
             {
-                return InternalServerError(locationDependencyException.InnerException);
+                return InternalServerError(GuestDependencyException.InnerException);
             }
             catch (GuestServiceException GuestServiceException)
             {
@@ -91,6 +91,39 @@ namespace Sheenam.Api.Controllers
                 when (GuestValidationException.InnerException is NotFoundGuestException)
             {
                 return NotFound(GuestValidationException.InnerException);
+            }
+            catch (GuestServiceException GuestServiceException)
+            {
+                return InternalServerError(GuestServiceException.InnerException);
+            }
+        }
+
+        [HttpPut]
+        public async ValueTask<ActionResult<Guest>> PutGuestAsync(Guest Guest)
+        {
+            try
+            {
+                Guest modifiedGuest =
+                    await this.guestService.ModifyGuestAsync(Guest);
+
+                return Ok(modifiedGuest);
+            }
+            catch (GuestValidationException GuestValidationException)
+                when (GuestValidationException.InnerException is NotFoundGuestException)
+            {
+                return NotFound(GuestValidationException.InnerException);
+            }
+            catch (GuestValidationException GuestValidationException)
+            {
+                return BadRequest(GuestValidationException.InnerException);
+            }
+            catch (GuestDependencyValidationException GuestDependencyValidationException)
+            {
+                return BadRequest(GuestDependencyValidationException.InnerException);
+            }
+            catch (GuestDependencyException GuestDependencyException)
+            {
+                return InternalServerError(GuestDependencyException.InnerException);
             }
             catch (GuestServiceException GuestServiceException)
             {
