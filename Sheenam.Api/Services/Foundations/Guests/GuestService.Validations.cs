@@ -42,6 +42,23 @@ public partial class GuestService
           (Rule: IsInvalid(guest.Address), Parameter: nameof(guest.Address)),
           (Rule: IsInvalid(guest.Gender), Parameter: nameof(guest.Gender)));
     }
+    private static void ValidateAgainstStorageGuestOnModify(Guest inputGuest, Guest storageGuest)
+    {
+        ValidateStorageGuest(storageGuest, inputGuest.Id);
+        Validate(
+        (Rule: IsNotSame(
+                firstGuid: inputGuest.Id,
+                secondGuid: storageGuest.Id,
+                secondDateName: nameof(Guest.DateOfBirth)),
+                Parameter: nameof(Guest.DateOfBirth)));
+    }
+    private static void ValidateStorageGuest(Guest maybeGuest, Guid GuestId)
+    {
+        if (maybeGuest is null)
+        {
+            throw new NotFoundGuestException(GuestId);
+        }
+    }
     private void ValidationGuestNotNull(Guest guest)
     {
         if (guest is null)
@@ -49,6 +66,7 @@ public partial class GuestService
             throw new NullGuestException();
         }
     }
+
     private static void ValidateStorageGuestExists(Guest maybeGuest, Guid guestId)
     {
         if (maybeGuest is null)
@@ -62,7 +80,14 @@ public partial class GuestService
         Condition = id == Guid.Empty,
         Message = "Id is required"
     };
-
+    private static dynamic IsNotSame(
+          Guid firstGuid,
+           Guid secondGuid,
+          string secondDateName) => new
+          {
+              Condition = firstGuid != secondGuid,
+              Message = $"Guid is not same as {secondDateName}"
+          };
     private static dynamic IsInvalid(string text) => new
     {
         Condition = string.IsNullOrWhiteSpace(text),
@@ -79,6 +104,14 @@ public partial class GuestService
         Condition = Enum.IsDefined(gender) is false,
         Message = "Value is invalid"
     };
+    private static dynamic IsSame(
+           Guid firstGuid,
+           Guid secondGuid,
+           string secondDateName) => new
+           {
+               Condition = firstGuid == secondGuid,
+               Message = $"Date is the same as {secondDateName}"
+           };
 
     private static void Validate(params (dynamic Rule, string Parameter)[] validations)
     {

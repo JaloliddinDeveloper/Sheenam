@@ -53,7 +53,6 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
         {
             return new IntRange(min: 2, max: 9).GetValue();
         }
-
         private static string GetRandomString()
         {
             return new MnemonicString().GetValue();
@@ -74,7 +73,22 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
 
         private Expression<Func<Xeption,bool>> SameExceptionAs(Xeption expectedException)=>
             actualException =>actualException.SameExceptionAs(expectedException);
-           
+
+        private static int GetRandomNegativeNumber() =>
+       -1 * new IntRange(min: 2, max: 9).GetValue();
+        private Guest CreateRandomGuest(DateTimeOffset dates) =>
+                CreateGuestFiller(dates).Create();
+
+        private Guest CreateRandomModifyGuest(DateTimeOffset dates)
+        {
+            int randomdaysInPast = GetRandomNegativeNumber();
+            Guest randomGuest = CreateRandomGuest(dates);
+
+            randomGuest.DateOfBirth = randomGuest.DateOfBirth.AddDays(randomdaysInPast);
+
+            return randomGuest;
+        }
+
         private static Filler<Guest> CreateGuestFiller(DateTimeOffset date)
         {
             var filler=new Filler<Guest>();

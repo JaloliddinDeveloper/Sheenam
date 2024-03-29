@@ -18,28 +18,35 @@ namespace Sheenam.Api.Brokers.Storages
         }
         private async ValueTask<T> InsertAsync<T>(T @object) where T : class
         {
-          using var broker = new StorageBroker(this.configuration);
-                broker.Entry<T>(@object).State=EntityState.Added;
+            using var broker = new StorageBroker(this.configuration);
+            broker.Entry<T>(@object).State = EntityState.Added;
             await broker.SaveChangesAsync();
             return @object;
         }
         private IQueryable<T> SelectAll<T>() where T : class
-        { 
-           using var broker = new StorageBroker(this.configuration);
-           
+        {
+            using var broker = new StorageBroker(this.configuration);
+
             return broker.Set<T>();
         }
-        private async ValueTask<T> SelectAsync<T>(params object[] objectIds) where T: class
+        private async ValueTask<T> SelectAsync<T>(params object[] objectIds) where T : class
         {
-          using var broker= new StorageBroker(this.configuration);
+            using var broker = new StorageBroker(this.configuration);
 
             return await broker.FindAsync<T>(objectIds);
         }
-        
 
-        
+        private async ValueTask<T> UpdateAsync<T>(T @object) where T : class
+        {
+            using var broker=new StorageBroker(this.configuration);
+            broker.Entry(@object).State = EntityState.Modified;
+            await broker.SaveChangesAsync();
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            return @object;
+        }
+
+
+                protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-CNTLCPV;Initial Catalog=TestDB;Integrated Security=True;TrustServerCertificate=True");
         }
