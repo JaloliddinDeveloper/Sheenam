@@ -3,6 +3,7 @@
 // Free To Use To Find Comfort And Peace
 //==================================================
 
+using ADotNet.Models.Pipelines.GithubPipelines.DotNets;
 using Sheenam.Api.Brokers.Loggings;
 using Sheenam.Api.Brokers.Storages;
 using Sheenam.Api.Models.Foundations.Guests;
@@ -53,6 +54,19 @@ namespace Sheenam.Api.Services.Foundations.Guests
                ValidateAgainstStorageGuestOnModify(inputGuest: Guest, storageGuest: maybeGuest);
                return await this.storageBroker.UpdateGuestAsync(Guest);
            });
+
+        public ValueTask<Guest> RemoveGuestByIdAsync(Guid GuestId) =>
+          TryCatch(async () =>
+          {
+              ValidateGuestId(GuestId);
+
+              Guest maybeGuest =
+                  await this.storageBroker.SelectGuestByIdAsync(GuestId);
+
+              ValidateStorageGuestExists(maybeGuest, GuestId);
+
+              return await this.storageBroker.DeleteGuestAsync(maybeGuest);
+          });
     }
 }
 
