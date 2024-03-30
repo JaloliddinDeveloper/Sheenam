@@ -38,15 +38,23 @@ namespace Sheenam.Api.Brokers.Storages
 
         private async ValueTask<T> UpdateAsync<T>(T @object) where T : class
         {
-            using var broker=new StorageBroker(this.configuration);
+            using var broker = new StorageBroker(this.configuration);
             broker.Entry(@object).State = EntityState.Modified;
+            await broker.SaveChangesAsync();
+
+            return @object;
+        }
+        private async ValueTask<T> DeleteAsync<T>(T @object) where T : class
+        {
+            using var broker = new StorageBroker(this.configuration);
+            broker.Entry(@object).State = EntityState.Deleted;
             await broker.SaveChangesAsync();
 
             return @object;
         }
 
 
-                protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-CNTLCPV;Initial Catalog=TestDB;Integrated Security=True;TrustServerCertificate=True");
         }

@@ -3,6 +3,7 @@
 // Free To Use To Find Comfort And Peace
 //==================================================
 
+using ADotNet.Models.Pipelines.GithubPipelines.DotNets;
 using Sheenam.Api.Models.Foundations.Guests;
 
 namespace Sheenam.Api.Services.Foundations.Guests
@@ -13,5 +14,6 @@ namespace Sheenam.Api.Services.Foundations.Guests
         IQueryable<Guest> RetrieveAllGuests();
         ValueTask<Guest> RetrieveGuestByIdAsync(Guid guestId);
         ValueTask<Guest> ModifyGuestAsync(Guest guest);
+        ValueTask<Guest> RemoveGuestByIdAsync(Guid GuestId);
     }
 }

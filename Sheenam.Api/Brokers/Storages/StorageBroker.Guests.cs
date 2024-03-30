@@ -5,6 +5,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Sheenam.Api.Models.Foundations.Guests;
+using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 
 namespace Sheenam.Api.Brokers.Storages
 {
@@ -27,6 +28,10 @@ namespace Sheenam.Api.Brokers.Storages
         public async ValueTask<Guest> UpdateGuestAsync(Guest guest)
         {
             return await UpdateAsync(guest);
+        }
+       public async ValueTask<Guest> DeleteGuestAsync(Guest guest)
+        {
+            return await DeleteAsync<Guest>(guest);
         }
     }
 }
