@@ -18,10 +18,9 @@ namespace Sheenam.Api.Controllers
     {
         private readonly IGuestService guestService;
 
-        public GuestsController(IGuestService guestService)
-        {
+        public GuestsController(IGuestService guestService)=>
             this.guestService = guestService;
-        }
+        
         [HttpPost]
         public async ValueTask<ActionResult<Guest>> PostGuestAsync(Guest guest)
         {

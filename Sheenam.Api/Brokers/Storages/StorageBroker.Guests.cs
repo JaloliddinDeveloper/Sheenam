@@ -5,7 +5,6 @@
 
 using Microsoft.EntityFrameworkCore;
 using Sheenam.Api.Models.Foundations.Guests;
-using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 
 namespace Sheenam.Api.Brokers.Storages
 {
@@ -13,25 +12,19 @@ namespace Sheenam.Api.Brokers.Storages
     {
         public DbSet<Guest> Guests { get; set; }
 
-        public async ValueTask<Guest> InsertGuestAsync(Guest guest)
-        {
-           return await InsertAsync(guest);
-        }
-        public IQueryable<Guest> SelectAllGuests()
-        {
-            return SelectAll<Guest>();
-        }
-        public async ValueTask<Guest> SelectGuestByIdAsync(Guid guestId)
-        {
-            return await SelectAsync<Guest>(guestId);
-        }
-        public async ValueTask<Guest> UpdateGuestAsync(Guest guest)
-        {
-            return await UpdateAsync(guest);
-        }
-       public async ValueTask<Guest> DeleteGuestAsync(Guest guest)
-        {
-            return await DeleteAsync<Guest>(guest);
-        }
+        public async ValueTask<Guest> InsertGuestAsync(Guest guest)=>
+        await InsertAsync(guest);
+        
+        public IQueryable<Guest> SelectAllGuests()=>
+        SelectAll<Guest>();
+        
+        public async ValueTask<Guest> SelectGuestByIdAsync(Guid guestId)=>
+        await SelectAsync<Guest>(guestId);
+        
+        public async ValueTask<Guest> UpdateGuestAsync(Guest guest)=>
+         await UpdateAsync(guest);
+        
+       public async ValueTask<Guest> DeleteGuestAsync(Guest guest)=>
+        await DeleteAsync<Guest>(guest);
     }
 }

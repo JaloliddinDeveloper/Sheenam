@@ -35,7 +35,6 @@ namespace Sheenam.Api.Brokers.Storages
 
             return await broker.FindAsync<T>(objectIds);
         }
-
         private async ValueTask<T> UpdateAsync<T>(T @object) where T : class
         {
             using var broker = new StorageBroker(this.configuration);
@@ -53,11 +52,9 @@ namespace Sheenam.Api.Brokers.Storages
             return @object;
         }
 
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)=>
             optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-CNTLCPV;Initial Catalog=TestDB;Integrated Security=True;TrustServerCertificate=True");
-        }
+        
         public override void Dispose() { }
     }
 }
